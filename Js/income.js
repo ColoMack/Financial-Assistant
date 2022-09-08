@@ -33,28 +33,38 @@ firebase.firestore().collection("income").get().then((querySnapshot)=>{
         var timeStamp = doc.data().timeStamp;
         var docId = doc.data().docId;
 
-        var deleteLink = "income.html" +"?" + docId;
-
         content += '<tr>';
             content+= '<td>'+incomeType+'</td>';
             content+= '<td>'+paymentMethod+'</td>';
             content+= '<td> Ksh. '+amount+'</td>';
             content+= '<td>'+receivedBy+'</td>';
             content+= '<td><button class="btn btn-success">Edit</button></td>';
-            content+= '<td><a href="'+deleteLink+'" class="btn btn-danger">Delete</a></td>';
+            content+= '<td><button onclick="deleteDoc(\'' + docId + '\')" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button></td>';
         content += '</tr>';
 
     })
     $("#incomeList").append(content);
 })
 
+//run a function tha allows us to get the doc id on click of the button
+window.deleteDoc = function(docId){
+    console.log(docId)
+
+    document.getElementById("btnDeleteRecord").onclick = function(){
+
+        firebase.firestore().collection("income").doc(docId).delete().then(()=>{
+            window.location.href = "income.html"
+        })
+    }
+}
+
+
+
+
 
 
 ///deleting data
 
-var getDocId = decodeURIComponent(window.location.search);
-var deleteRecordId = getDocId.substring(1);
+//var getDocId = decodeURIComponent(window.location.search);
+//var deleteRecordId = getDocId.substring(1);
 
-firebase.firestore().collection("income").doc(deleteRecordId).delete().then(()=>{
-    window.location.href = "income.html"
-})
